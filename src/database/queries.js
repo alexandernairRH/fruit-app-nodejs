@@ -1,4 +1,10 @@
 const Pool = require("pg").Pool;
+const uuid = require("node-uuid")
+
+const {
+    getPGConnectString
+} = require("./pg")
+
 const pool = new Pool({
   user: "postgres",
   host: "localhost",
@@ -8,11 +14,8 @@ const pool = new Pool({
 });
 const tableName = "fruit";
 
-function createFruit(fruit) {
-
-}
-
 //get all the fruits in order to list them off
+
 const GET = (request, response) => {
   pool.query("SELECT * FROM fruit ORDER BY id ASC", (error, results) => {
     if (error) {
@@ -21,8 +24,8 @@ const GET = (request, response) => {
     response.status(200).json(results.rows);
   });
 };
-
 //insert a specific fruit into the data base
+
 const POST = (request, response) => {
   const { name } = request.body;
 
@@ -37,8 +40,8 @@ const POST = (request, response) => {
     }
   );
 };
-
 //update a fruit in the data base
+
 const PUT = (request, response) => {
   const { name, id } = request.body;
 
@@ -53,8 +56,8 @@ const PUT = (request, response) => {
     }
   );
 };
-
 //delete a specific fruit in the database
+
 const DELETE = (request, response) => {
   const { name, id } = request.body;
 
@@ -70,10 +73,32 @@ const DELETE = (request, response) => {
   );
 };
 
+function createFruit(fruit) {
+
+}
+
+const listFruits = (req, rep) => {
+    (async () => {
+        const connectionString = getPGConnectString()
+        console.log("connstr", connectionString)
+
+        const pool2 = new Pool({connectionString});
+
+        // Connect to database
+        const client = await pool2.connect();
+
+        client.query('select * from fruit').then(res => {
+            rep.status(200).send(res.rows);
+            client.release();
+        }).catch(e => console.error(e.stack));
+    })().catch((err) => console.log("err from async: " + err.stack));
+}
+
 module.exports = {
   POST,
   PUT,
   GET,
   DELETE,
-    createFruit,
+  createFruit,
+  listFruits,
 };

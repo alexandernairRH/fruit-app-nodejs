@@ -15,6 +15,7 @@
   "dependencies": {
     "body-parser": "^1.20.0",
     "express": "^4.18.1",
+    "kube-service-bindings": "github:myeung18/kube-service-bindings#pg-crdb",
     "node-uuid": "^1.4.8",
     "pg": "^8.7.3"
   }

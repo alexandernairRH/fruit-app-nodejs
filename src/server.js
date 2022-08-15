@@ -1,15 +1,13 @@
 const uuid = require("node-uuid")
+const initDb = require("./database/pg").initDb()
+
+const {
+    listFruits,
+} = require("./database/queries")
+
 
 module.exports = function (app) {
-    app.get("/fruits", (request, response) => {
-        console.log('called');
-        const fruit = {
-            id: uuid.v4(),
-            name: 'smaple fruit',
-        }
-        const fruits = [fruit];
-        response.json(fruits);
-    });
+    app.get("/fruits", listFruits);
 
     app.post("/fruits", (request, response) => {
         let fruit = {
