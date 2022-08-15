@@ -1,20 +1,32 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const app = express();
-const port = 3000;
+const uuid = require("node-uuid")
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+module.exports = function (app) {
+    app.get("/fruits", (request, response) => {
+        console.log('called');
+        const fruit = {
+            id: uuid.v4(),
+            name: 'smaple fruit',
+        }
+        const fruits = [fruit];
+        response.json(fruits);
+    });
 
-app.get("/", (request, response) => {
-  response.sendFile("./index.html", { root: ".." });
-});
+    app.post("/fruits", (request, response) => {
+        let fruit = {
+            id: uuid.v4(),
+            name: request.body.name,
+        }
+        console.log('post called', fruit);
+        response.send(fruit);
+    });
 
-//create the server on port 8000
-app.listen(port, () => {
-  console.log(`App running on port ${port}.`);
-});
+    app.delete("/fruits/:id", (request, response) => {
+        console.log('del-called ', request.params.id);
+        response.send("deleting.");
+    });
+
+    app.put("/fruits/:id", (request, response) => {
+        console.log('update-called ', request.params.id);
+        response.send("updating.");
+    });
+}

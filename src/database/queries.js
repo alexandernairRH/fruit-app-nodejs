@@ -8,6 +8,10 @@ const pool = new Pool({
 });
 const tableName = "fruit";
 
+function createFruit(fruit) {
+
+}
+
 //get all the fruits in order to list them off
 const GET = (request, response) => {
   pool.query("SELECT * FROM fruit ORDER BY id ASC", (error, results) => {
@@ -71,4 +75,5 @@ module.exports = {
   PUT,
   GET,
   DELETE,
+    createFruit,
 };
