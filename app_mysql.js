@@ -12,10 +12,10 @@ app.use(
 
 app.use(express.static('public'));
 
-const controller = require("./src/server")
+const controller = require("./src/mysql/server")
 controller(app);
 
 //create the server on a port
 app.listen(port, () => {
-    console.log(`App running on port ${port}.`);
+    console.log(`App (MYSQL) running on port ${port}.`);
 });
