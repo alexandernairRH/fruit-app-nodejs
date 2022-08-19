@@ -5,7 +5,6 @@ const {
     updateFruit,
 } = require("./queries")
 
-
 module.exports = function (app) {
     app.get("/fruits", listFruits);
     app.post("/fruits", createFruit);

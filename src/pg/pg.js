@@ -32,7 +32,6 @@ const config = {
 }
 
 // Connect to database
-const client = Knex(config);
 
 async function initTable(client) {
     await client.migrate.latest();
@@ -42,6 +41,8 @@ async function initTable(client) {
 (async () => {
     console.log("initializing fruit schema");
     try {
+        const client = Knex(config);
+
         await initTable(client);
     } catch (err) {
         console.log(err.message); //ignore migration error

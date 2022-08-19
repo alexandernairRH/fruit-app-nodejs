@@ -1,13 +1,17 @@
 const Pool = require("pg").Pool;
 const {Client} = require("pg");
-const uuid = require("node-uuid")
+const uuid = require("uuid")
 
 const {
     getPGConnectString,
 } = require("./pg")
 
-const pgPool = new Client(getPGConnectString());
-pgPool.connect();
+const dbConn = new Client(getPGConnectString());
+try {
+    dbConn.connect();
+} catch (err) {
+    console.log("failed to connect to database.")
+}
 
 const createFruit = (req, rep) => {
     (async () => {
@@ -17,7 +21,7 @@ const createFruit = (req, rep) => {
         }
         console.log('post called', fruit);
         try {
-            let res = await pgPool.query(`insert into fruit (id, name) values ($1, $2)`, [fruit.id, fruit.name]);
+            let res = await dbConn.query(`insert into fruit (id, name) values ($1, $2)`, [fruit.id, fruit.name]);
             // await pgPool.end();
         } catch (err) {
             console.log(`fail to use db ${err.status}`);
@@ -28,7 +32,7 @@ const createFruit = (req, rep) => {
 
 const listFruits = (req, rep) => {
     (async () => {
-        pgPool.query('select * from fruit').then(res => {
+        dbConn.query('select * from fruit').then(res => {
             rep.status(200).send(res.rows);
         }).catch(e => console.error(e.stack));
     })().catch((err) => console.log("err from async: " + err.stack));
@@ -55,7 +59,7 @@ const deleteFruit = (req, rep) => {
     (async () => {
         console.log("deleting", req.params.id);
 
-        pgPool.query("delete from fruit where id = $1", [req.params.id]).then(res => {
+        dbConn.query("delete from fruit where id = $1", [req.params.id]).then(res => {
             rep.status(200).send(res.rows);
             // client.release();
         }).catch(e => console.error(e.stack));
@@ -74,7 +78,7 @@ const updateFruit = (req, rep) => {
         // const client = await pool2.connect();
         console.log("updating", req.params.id, req.body.name);
 
-        pgPool.query("update fruit set name = $1 where id = $2", [req.body.name, req.params.id]).then(res => {
+        dbConn.query("update fruit set name = $1 where id = $2", [req.body.name, req.params.id]).then(res => {
             rep.status(200).send(res.rows);
         }).catch(e => console.error(e.stack));
     })().catch((err) => console.log("err from async: " + err.stack));

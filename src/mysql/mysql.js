@@ -1,16 +1,47 @@
-const pgBinding = require("kube-service-bindings")
+const srvBinding = require("kube-service-bindings")
 
-function getMYSQLConnectString() {
+function getMYSQLConnectConfig() {
     let bindingInfo;
     try {
-        bindingInfo = pgBinding.getBinding('MYSQL', 'mysql')
+        bindingInfo = srvBinding.getBinding('MYSQL', 'mysql')
         console.log(bindingInfo)
     } catch (err) {
         console.log(err)
     }
-    return bindingInfo.connectionString;
+    return bindingInfo;
 }
 
 module.exports = {
-    getMYSQLConnectString,
+    getMYSQLConnectConfig,
 }
+
+const Knex = require("knex");
+
+const config = {
+    client: "mysql2",
+    connection: getMYSQLConnectConfig(),
+    migrations: {
+        directory: "migrations/schema",
+    },
+    seeds: {
+        directory: "migrations/data",
+    },
+}
+
+async function initTable(client) {
+    await client.migrate.latest();
+    await client.seed.run();
+}
+
+(async () => {
+    console.log("initializing fruit schema");
+    try {
+        // Connect to database
+        const client = Knex(config);
+
+        await initTable(client);
+    } catch (err) {
+        console.log(err.message); //ignore migration error
+    }
+
+})().catch((err) => console.log(err.stack));

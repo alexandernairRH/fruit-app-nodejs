@@ -32,3 +32,10 @@ This is a Red Hat OpenShift Data Access demo that is built with Node JS to demon
 1. connect index.html with queries.js
 2. add OpenShift connectivity
 3. add Cyber Ark connectivity to keep secrets encrypted
+
+### build
+```shell
+
+docker build -f Dockerfile-pg -t quay.io/myeung/fruit-app-nodejs-pg:v0.0.1 .
+
+```
