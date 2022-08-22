@@ -45,7 +45,8 @@ async function initTable(client) {
 
         await initTable(client);
     } catch (err) {
-        console.log(err.message); //ignore migration error
+        console.log("ignoring migration error")
+        console.log(err.message);
     }
 
 })().catch((err) => console.log(err.stack));
